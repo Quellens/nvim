@@ -9,6 +9,7 @@ return {
   config = function()
     require('theme-hub').setup {
       -- Configuration options (see below)
+      persistent = true,
     }
   end,
 }
