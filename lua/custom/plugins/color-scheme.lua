@@ -3,13 +3,13 @@ return {
   dependencies = {
     'nvim-lua/plenary.nvim',
     'nvim-telescope/telescope-ui-select.nvim',
-    -- Optional: for themes that use lush (will be notified if a theme requires it)
-    -- "rktjmp/lush.nvim"
+    'rktjmp/lush.nvim',
   },
   config = function()
     require('theme-hub').setup {
       -- Configuration options (see below)
       persistent = true,
     }
+    vim.keymap.set('n', '<leader>c', '<cmd>ThemeHub<CR>', { desc = '[C]olor Themes' })
   end,
 }
