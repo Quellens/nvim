@@ -9,7 +9,7 @@ return {
     animation = false,
 
     -- Enable/disable current/total tabpages indicator (top right corner)
-    tabpages = true,
+    tabpages = false,
 
     -- A buffer to this direction will be focused (if it exists) when closing the current buffer.
     -- Valid options are 'left' (the default), 'previous', and 'right'
@@ -25,7 +25,7 @@ return {
       diagnostics = {
         [vim.diagnostic.severity.ERROR] = { enabled = true, icon = ' ' },
       },
-      separator = { left = '▎', right = '' },
+      separator = { left = '▎', right = '🮇' },
 
       -- If true, add an additional separator at the end of the buffer list
       separator_at_end = true,
