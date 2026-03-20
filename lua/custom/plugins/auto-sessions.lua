@@ -3,9 +3,9 @@ return {
   lazy = false,
   config = function()
     local nvim_tree_api = require 'nvim-tree.api'
-    nvim_tree_api.tree.open()
-    nvim_tree_api.tree.change_root(vim.fn.getcwd())
-    nvim_tree_api.tree.reload()
+    -- nvim_tree_api.tree.open()
+    -- nvim_tree_api.tree.change_root(vim.fn.getcwd())
+    -- nvim_tree_api.tree.reload()
     local auto_session = require 'auto-session'
 
     auto_session.setup {
