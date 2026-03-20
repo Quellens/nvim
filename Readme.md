@@ -18,7 +18,7 @@ italic_font      auto
 bold_italic_font auto
 ```
 
-3. Clone Repo into nvim config
+4. Clone Repo into nvim config
 
 ```sh
 git clone https://github.com/Quellens/nvim.git "${XDG_CONFIG_HOME:-$HOME/.config}"/nvim
