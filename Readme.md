@@ -8,6 +8,15 @@ sudo npm install -g tree-sitter-cli
 ```sh
 sudo npm install -g markdownlint-cli
 ```
+3. Nerdfont
+I use this Font
+
+```sh
+font_family      JetBrainsMono Nerd Font 
+bold_font        auto
+italic_font      auto
+bold_italic_font auto
+```
 
 3. Clone Repo into nvim config
 
