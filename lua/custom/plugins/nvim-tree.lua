@@ -2,10 +2,10 @@ return {
   'nvim-tree/nvim-tree.lua',
   version = '*',
   lazy = false,
-  dependencies = {
-    'nvim-tree/nvim-web-devicons',
-  },
+  dependencies = {},
   config = function()
+    require('mini.icons').setup()
+    require('mini.icons').mock_nvim_web_devicons()
     local nvimtree = require 'nvim-tree'
     -- recommended settings from nvim-tree documentation
 
@@ -16,6 +16,11 @@ return {
       -- change folder arrow icons
       renderer = {
         root_folder_label = false,
+        icons = {
+          show = {
+            git = false,
+          },
+        },
         indent_markers = {
           enable = true,
         },
