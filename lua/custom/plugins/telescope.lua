@@ -59,7 +59,8 @@ return {
     vim.keymap.set('n', '<leader>f.', builtin.oldfiles, { desc = '[F]ind Recent Files ("." for repeat)' })
     vim.keymap.set('n', '<leader>fc', builtin.commands, { desc = '[F]ind [C]ommands' })
     vim.keymap.set('n', '<leader><leader>', builtin.buffers, { desc = '[ ] Find existing buffers' })
-    vim.keymap.set('n', '<leader>u', '<cmd>Telescope undo<cr>')
+    vim.keymap.set('n', '<leader>U', '<cmd>Telescope undo<cr>', { desc = 'Undo-Tree for File' })
+    vim.keymap.set('n', '<leader>u', '<cmd>Atone toggle<cr>', { desc = 'Undo-Tree for File' })
     -- LSP
     vim.api.nvim_create_autocmd('LspAttach', {
       group = vim.api.nvim_create_augroup('telescope-lsp-attach', { clear = true }),
