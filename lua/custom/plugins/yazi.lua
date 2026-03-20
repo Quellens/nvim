@@ -7,16 +7,15 @@ return {
   },
   keys = {
     {
-      '<leader>yf',
+      '<leader>y',
       mode = { 'n', 'v' },
       '<cmd>Yazi<cr>',
       desc = 'Yazi at the current file',
     },
     {
-      -- Open in the current working directory
-      '<leader>yw',
+      '<leader>Y',
       '<cmd>Yazi cwd<cr>',
-      desc = 'Yazi in the working directory',
+      desc = 'Yazi in current working directory',
     },
   },
   opts = {
