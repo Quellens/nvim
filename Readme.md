@@ -30,3 +30,7 @@ the current plugin status. Hit `q` to close the window.
 ### TSInstall
 
 `:TSInstall all`
+
+
+### Other plugin prerequisites
+- yazi and lazygit should be installed on your system
