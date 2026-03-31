@@ -25,27 +25,6 @@ return {
     -- }
 
     telescope.setup {
-      defaults = {
-        vimgrep_arguments = {
-          'rg',
-          '--color=never',
-          '--no-heading',
-          '--with-filename',
-          '--line-number',
-          '--column',
-          '--smart-case',
-          '--hidden',
-        },
-        --   path_display = { 'smart' },
-        --   mappings = {
-        --     i = {
-        --       ['<C-k>'] = actions.move_selection_previous, -- move to prev result
-        --       ['<C-j>'] = actions.move_selection_next, -- move to next result
-        --       ['<C-q>'] = actions.send_selected_to_qflist + custom_actions.open_trouble_qflist,
-        --       ['<C-t>'] = trouble_telescope.open,
-        --     },
-        --   },
-      },
       extensions = {
         ['ui-select'] = { require('telescope.themes').get_dropdown() },
         undo = {
@@ -60,10 +39,56 @@ return {
     local builtin = require 'telescope.builtin'
     vim.keymap.set('n', '<leader>fh', builtin.help_tags, { desc = '[F]ind [H]elp' })
     vim.keymap.set('n', '<leader>fk', builtin.keymaps, { desc = '[F]ind [K]eymaps' })
-    vim.keymap.set('n', '<leader>ff', function() builtin.find_files { hidden = true } end, { desc = '[F]ind [F]iles' })
+    vim.keymap.set('n', '<leader>ff', function()
+      local hidden = false
+
+      local function find(default_text)
+        builtin.find_files {
+          hidden = hidden,
+          default_text = default_text,
+          attach_mappings = function(prompt_bufnr, map)
+            local function toggle(buf)
+              hidden = not hidden
+              local line = require('telescope.actions.state').get_current_line()
+              require('telescope.actions').close(buf)
+              find(line) -- rekursiv mit neuem hidden-Wert
+            end
+
+            map('i', '<C-h>', toggle)
+            map('n', '<C-h>', toggle)
+            return true
+          end,
+        }
+      end
+
+      find()
+    end, { desc = '[F]ind [F]iles' })
     vim.keymap.set('n', '<leader>fs', builtin.builtin, { desc = '[F]ind [S]elect Telescope' })
     vim.keymap.set({ 'n', 'v' }, '<leader>fw', builtin.grep_string, { desc = '[F]ind current [W]ord' })
-    vim.keymap.set('n', '<leader>fg', builtin.live_grep, { desc = '[F]ind by [G]rep' })
+    vim.keymap.set('n', '<leader>fg', function()
+      local hidden = false
+
+      local function grep(default_text)
+        builtin.live_grep {
+          additional_args = hidden and { '--hidden' } or {},
+          default_text = default_text,
+          attach_mappings = function(prompt_bufnr, map)
+            local function toggle(buf)
+              hidden = not hidden
+              local line = require('telescope.actions.state').get_current_line()
+              require('telescope.actions').close(buf)
+              grep(line)
+            end
+
+            map('i', '<C-h>', toggle)
+            map('n', '<C-h>', toggle)
+            return true
+          end,
+        }
+      end
+
+      grep()
+    end, { desc = '[F]ind by [G]rep' })
     vim.keymap.set('n', '<leader>fd', builtin.diagnostics, { desc = '[F]ind [D]iagnostics' })
     vim.keymap.set('n', '<leader>fr', builtin.resume, { desc = '[F]ind [R]esume' })
     vim.keymap.set('n', '<leader>f.', builtin.oldfiles, { desc = '[F]ind Recent Files ("." for repeat)' })
