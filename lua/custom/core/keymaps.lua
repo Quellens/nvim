@@ -13,6 +13,12 @@ vim.keymap.set('n', '<leader>sh', '<C-w>s', { desc = 'Split window horizontally'
 vim.keymap.set('n', '<leader>se', '<C-w>=', { desc = 'Make splits equal size' }) -- make split windows equal width & height
 vim.keymap.set('n', '<leader>sx', '<cmd>close<CR>', { desc = 'Close current split' }) -- close current split window
 
+-- resize windows
+vim.keymap.set('n', '<M-t>', '<c-w>+')
+vim.keymap.set('n', '<M-s>', '<c-w>-')
+vim.keymap.set('n', '<M-,>', '<c-w>5<')
+vim.keymap.set('n', '<M-.>', '<c-w>5>')
+
 -- Move to previous/next
 map('n', 'H', '<Cmd>BufferPrevious<CR>', opts)
 map('n', 'L', '<Cmd>BufferNext<CR>', opts)
