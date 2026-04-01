@@ -1,22 +1,19 @@
 <img width="1285" height="380" alt="image" src="https://github.com/user-attachments/assets/f9a2f13f-db39-4f5b-b580-33ed38909e8f" />
 
-1. Treesitter
-```sh
-sudo npm install -g tree-sitter-cli
-```
-2. markdownlint-cli
-```sh
-sudo npm install -g markdownlint-cli
-```
-3. Nerdfont
-I use this Font
+# Shady Vim - My Neovim Setup
 
+1. Install Neovim
+2. Install a Nerd-Font (i currently use this)
 ```sh
 font_family      JetBrainsMono Nerd Font 
-bold_font        auto
-italic_font      auto
-bold_italic_font auto
 ```
+3. Other Stuff to Install
+```sh
+sudo npm install -g tree-sitter-cli
+sudo npm install -g markdownlint-cli
+```
+- yazi and lazygit should also be installed on your system
+
 
 4. Clone Repo into nvim config
 
@@ -24,13 +21,11 @@ bold_italic_font auto
 git clone https://github.com/Quellens/nvim.git "${XDG_CONFIG_HOME:-$HOME/.config}"/nvim
 ```
 
-That's it! Lazy will install all the plugins you have. Use `:Lazy` to view
-the current plugin status. Hit `q` to close the window.
+That's it!
 
-### TSInstall
-
-`:TSInstall all`
-
-
-### Other plugin prerequisites
-- yazi and lazygit should be installed on your system
+### After Installation 
+- `Lazy` -> Manage Plugins
+- `Mason` -> Manage LSP, Linting, 
+- `:TSInstall all` -> Treesitter
+- Search for help with `:help`
+- Checkhealth with `:checkhealth`
