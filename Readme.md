@@ -1,4 +1,5 @@
 ## Shady's nvim Setup
+<img width="675" height="449" alt="image" src="https://github.com/user-attachments/assets/1400061b-bf93-4cdb-b471-41a12a71abd1" />
 
 1. Treesitter
 ```sh
