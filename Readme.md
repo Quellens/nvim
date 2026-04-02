@@ -12,7 +12,7 @@ font_family      JetBrainsMono Nerd Font
 sudo npm install -g tree-sitter-cli
 sudo npm install -g markdownlint-cli
 ```
-- yazi and lazygit should also be installed on your system
+- fzf, yazi and lazygit should also be installed on your system
 
 
 4. Clone Repo into nvim config
