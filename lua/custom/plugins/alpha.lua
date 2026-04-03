@@ -18,17 +18,20 @@ return {
 
     -- Set menu
     dashboard.section.buttons.val = {
-      dashboard.button('e', '  New File', '<cmd>ene<CR>'),
-      dashboard.button('SPC fa', '󱁴  Find AutoSession', '<cmd>AutoSession search<CR>'),
-      dashboard.button('d', '🗑 Delete AutoSession', '<cmd>AutoSession deletePicker<CR>'),
-      dashboard.button('SPC e', '  Toggle file explorer', '<cmd>NvimTreeToggle<CR>'),
-      dashboard.button('SPC ff', '󰱼  Find File', '<cmd>Telescope find_files<CR>'),
-      dashboard.button('SPC fg', '  Live Grep', '<cmd>Telescope live_grep<CR>'),
+      dashboard.button('n', '  New File', '<cmd>ene<CR>'),
+      dashboard.button('f', '󰱼  Find File', '<cmd>Telescope find_files<CR>'),
+      dashboard.button('g', '  Live Grep', '<cmd>Telescope live_grep<CR>'),
+      dashboard.button('o', '  Open Session', '<cmd>AutoSession search<CR>'),
+      dashboard.button('d', '🗑 Delete Session', '<cmd>AutoSession deletePicker<CR>'),
+      dashboard.button('r', '   Recent', ':Telescope oldfiles<CR>'),
       dashboard.button('l', '󰒲  Lazy', '<cmd>Lazy<CR>'),
       dashboard.button('m', '󰿘  Mason', '<cmd>Mason<CR>'),
-      dashboard.button('q', '  Quit nvim', '<cmd>qa<CR>'),
+      dashboard.button('q', '  Quit', '<cmd>qa<CR>'),
     }
 
+    dashboard.section.footer.val = {
+      'stay tru 真',
+    }
     -- Send config to alpha
     alpha.setup(dashboard.opts)
 
