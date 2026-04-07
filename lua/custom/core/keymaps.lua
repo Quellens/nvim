@@ -40,7 +40,6 @@ map('n', '<A-0>', '<Cmd>BufferLast<CR>', opts)
 
 -- Pin/unpin buffer
 map('n', '<A-p>', '<Cmd>BufferPin<CR>', opts)
-map('n', '<leader>p', '<Cmd>BufferGotoPinned', opts)
 
 -- Magic buffer-picking mode
 map('n', '<C-p>', '<Cmd>BufferPick<CR>', opts)
