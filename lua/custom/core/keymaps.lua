@@ -44,3 +44,7 @@ map('n', '<A-p>', '<Cmd>BufferPin<CR>', opts)
 -- Magic buffer-picking mode
 map('n', '<C-p>', '<Cmd>BufferPick<CR>', opts)
 map('n', '<C-s-p>', '<Cmd>BufferPickDelete<CR>', opts)
+
+-- Lazy and Mason
+map('n', 'L', '<Cmd>Lazy<CR>', opts)
+map('n', 'M', '<Cmd>Mason<CR>', opts)
