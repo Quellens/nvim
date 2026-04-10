@@ -46,5 +46,8 @@ map('n', '<C-p>', '<Cmd>BufferPick<CR>', opts)
 map('n', '<C-s-p>', '<Cmd>BufferPickDelete<CR>', opts)
 
 -- Lazy and Mason
-map('n', 'L', '<Cmd>Lazy<CR>', opts)
-map('n', 'M', '<Cmd>Mason<CR>', opts)
+map('n', '<leader>L', '<Cmd>Lazy<CR>', opts)
+map('n', '<leader>M', '<Cmd>Mason<CR>', opts)
+
+-- Restart
+map('n', '<leader>r', '<Cmd>restart<CR>', opts)
