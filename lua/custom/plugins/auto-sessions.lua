@@ -1,5 +1,6 @@
 return {
   'rmagatti/auto-session',
+  dependencies = { 'romgrk/barbar.nvim' },
   lazy = false,
   config = function()
     -- local nvim_tree_api = require 'nvim-tree.api'
