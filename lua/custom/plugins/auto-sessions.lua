@@ -3,20 +3,21 @@ return {
   dependencies = { 'romgrk/barbar.nvim' },
   lazy = false,
   config = function()
-    -- local nvim_tree_api = require 'nvim-tree.api'
-    -- nvim_tree_api.tree.open()
-    -- nvim_tree_api.tree.change_root(vim.fn.getcwd())
-    -- nvim_tree_api.tree.reload()
     local auto_session = require 'auto-session'
 
+    -- nur auto-restore aktivieren, wenn keine CLI-Args übergeben wurden
+    local enable_auto_restore = vim.fn.argc() == 0
+
     auto_session.setup {
-      auto_restore_enabled = true,
+      auto_restore_enabled = enable_auto_restore,
       auto_session_suppress_dirs = { '~/', '~/Dev/', '~/Downloads', '~/Documents', '~/Desktop/' },
     }
 
-    local keymap = vim.keymap
-    keymap.set('n', '<leader>fa', '<cmd>AutoSession search<CR>', { desc = 'Search AutoSessions' })
-    -- keymap.set('n', '<leader>ar', '<cmd>AutoSession restore<CR>', { desc = 'Restore session for cwd' })
-    -- keymap.set('n', '<leader>as', '<cmd>AutoSession save<CR>', { desc = 'Save session for auto session root dir' })
+    vim.api.nvim_create_autocmd('VimEnter', {
+      once = true,
+      callback = function()
+        if not enable_auto_restore then return end
+      end,
+    })
   end,
 }
