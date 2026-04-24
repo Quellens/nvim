@@ -50,4 +50,7 @@ map('n', '<leader>L', '<Cmd>Lazy<CR>', opts)
 map('n', '<leader>M', '<Cmd>Mason<CR>', opts)
 
 -- Restart
-map('n', '<leader>r', '<Cmd>restart<CR>', opts)
+map('n', 'ZR', '<cmd>AutoSession save<CR><Cmd>restart<CR>', opts)
+
+-- Escape Terminal mode
+map('t', '<esc><esc>', '<C-\\><C-n>', opts)
