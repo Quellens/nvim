@@ -64,6 +64,7 @@ return {
       find()
     end, { desc = '[F]ind [F]iles' })
     vim.keymap.set('n', '<leader>fs', builtin.builtin, { desc = '[F]ind [S]elect Telescope' })
+    vim.keymap.set('n', '<leader>fa', '<cmd>AutoSession search<CR>', { desc = '[F]ind [S]elect Telescope' })
     vim.keymap.set({ 'n', 'v' }, '<leader>fw', builtin.grep_string, { desc = '[F]ind current [W]ord' })
     vim.keymap.set('n', '<leader>fg', function()
       local hidden = false
