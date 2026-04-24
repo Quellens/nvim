@@ -45,6 +45,9 @@ map('n', '<A-p>', '<Cmd>BufferPin<CR>', opts)
 map('n', '<C-p>', '<Cmd>BufferPick<CR>', opts)
 map('n', '<C-s-p>', '<Cmd>BufferPickDelete<CR>', opts)
 
+-- Quick Close (AltGr + x)
+map('n', '«', '<Cmd>BufferCloseAllButCurrentOrPinned<CR>', opts)
+
 -- Lazy and Mason
 map('n', '<leader>L', '<Cmd>Lazy<CR>', opts)
 map('n', '<leader>M', '<Cmd>Mason<CR>', opts)
