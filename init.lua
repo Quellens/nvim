@@ -157,6 +157,33 @@ vim.api.nvim_create_autocmd('TextYankPost', {
   callback = function() vim.hl.on_yank() end,
 })
 
+-- Delete all swap files in ~/.local/state/nvim/swap with confirmation
+vim.api.nvim_create_user_command('DeleteSwapFiles', function()
+  local dir = vim.fn.expand '~/.local/state/nvim/swap'
+  if vim.fn.isdirectory(dir) == 0 then
+    vim.notify('Swap directory not found: ' .. dir, vim.log.levels.WARN)
+    return
+  end
+  local choice = vim.fn.confirm('Delete ALL swap files in ' .. dir .. '?', '&Yes\n&No', 2)
+  if choice ~= 1 then
+    vim.notify('Abgebrochen.', vim.log.levels.INFO)
+    return
+  end
+  local files = vim.fn.globpath(dir, '*', false, true)
+  if vim.tbl_isempty(files) then
+    vim.notify('Keine Swap-Dateien gefunden.', vim.log.levels.INFO)
+    return
+  end
+  for _, f in ipairs(files) do
+    local ok, err = os.remove(f)
+    if ok then
+      vim.notify('Gelöscht: ' .. f, vim.log.levels.INFO)
+    else
+      vim.notify('Fehler beim Löschen: ' .. f .. ' (' .. tostring(err) .. ')', vim.log.levels.ERROR)
+    end
+  end
+end, {})
+
 -- [[ Install `lazy.nvim` plugin manager ]]
 --    See `:help lazy.nvim.txt` or https://github.com/folke/lazy.nvim for more info
 local lazypath = vim.fn.stdpath 'data' .. '/lazy/lazy.nvim'
