@@ -421,8 +421,6 @@ require('lazy').setup({
         -- typescript has this plugin:
         --   https://github.com/pmizio/typescript-tools.nvim
 
-        -- ts_ls = {},
-
         stylua = {}, -- Used to format Lua code
 
         -- Special Lua Config, as recommended by neovim help docs
