@@ -11,6 +11,11 @@ local M = {}
 -- toggle state (persistiert zwischen Aufrufen)
 local show_all = false
 
+local function truncate(str, max_len)
+  if #str <= max_len then return str end
+  return str:sub(1, max_len - 1) .. '…'
+end
+
 local function build_commits(rel_file)
   local rel_file_esc = vim_fn.shellescape(rel_file)
   local all_flag = show_all and '--all ' or ''
@@ -39,11 +44,27 @@ M.open_file_at_commit = function()
   pickers
     .new({}, {
       prompt_title = show_all and 'File History (all branches)' or 'File History',
-      finder = finders.new_table { results = commits },
+      finder = finders.new_table {
+        results = commits,
+        entry_maker = function(entry)
+          local hash, subject, reltime, author, refs = entry:match '^(%S+) | (.-) | (.-) | (.-) | (.*)$'
+
+          display = function()
+            local short_subject = truncate(subject, 30)
+            local short_reltime = truncate(reltime, 11)
+            return string.format('%s • %-30s  • %-10s • %s %s', hash, short_subject, short_reltime, author, refs or '')
+          end
+          return {
+            value = entry,
+            display = display,
+            ordinal = subject .. ' ' .. author,
+          }
+        end,
+      },
       previewer = previewers.new_termopen_previewer {
         get_command = function(entry)
           local hash = entry.value:match '^(%S+)'
-          return { 'git', 'diff', hash .. '^!', '--', rel_file }
+          return { 'git', '--no-pager', 'diff', hash .. '^!', '--', rel_file }
         end,
       },
       sorter = conf.generic_sorter {},
