@@ -4,21 +4,17 @@ local previewers = require 'telescope.previewers'
 local conf = require('telescope.config').values
 local actions = require 'telescope.actions'
 local action_state = require 'telescope.actions.state'
+local vim_fn = vim.fn
 
 local M = {}
 
-M.open_file_at_commit = function()
-  local rel_file = vim.fn.expand '%'
+-- toggle state (persistiert zwischen Aufrufen)
+local show_all = false
 
-  local rel_file_esc = vim.fn.shellescape(rel_file)
-
-  if rel_file == '' then
-    print 'No file open'
-    return
-  end
-
-  -- 🔥 commits with author + relative time
-  local cmd = "git log --all --pretty=format:'%h | %s | %ar | %an' -- " .. rel_file_esc
+local function build_commits(rel_file)
+  local rel_file_esc = vim_fn.shellescape(rel_file)
+  local all_flag = show_all and '--all ' or ''
+  local cmd = 'git log ' .. all_flag .. "--pretty=format:'%h | %s | %ar | %an | %d' -- " .. rel_file_esc
   local handle = io.popen(cmd)
   local result = handle:read '*a'
   handle:close()
@@ -27,54 +23,66 @@ M.open_file_at_commit = function()
   for line in result:gmatch '[^\r\n]+' do
     table.insert(commits, line)
   end
+  return commits
+end
+
+M.open_file_at_commit = function()
+  local rel_file = vim_fn.expand '%'
+
+  if rel_file == '' then
+    print 'No file open'
+    return
+  end
+
+  local commits = build_commits(rel_file)
 
   pickers
     .new({}, {
-      prompt_title = 'File History',
-
-      finder = finders.new_table {
-        results = commits,
-      },
-
-      -- 🔍 DIFF PREVIEW
+      prompt_title = show_all and 'File History (all branches)' or 'File History',
+      finder = finders.new_table { results = commits },
       previewer = previewers.new_termopen_previewer {
         get_command = function(entry)
           local hash = entry.value:match '^(%S+)'
           return { 'git', 'diff', hash .. '^!', '--', rel_file }
         end,
       },
-
       sorter = conf.generic_sorter {},
-
-      attach_mappings = function(prompt_bufnr)
+      attach_mappings = function(prompt_bufnr, map)
+        -- Enter: open file at commit
         actions.select_default:replace(function()
           local selection = action_state.get_selected_entry()
           local hash = selection.value:match '^(%S+)'
-
           actions.close(prompt_bufnr)
 
-          -- 📜 file content from commit
+          local rel_file_esc = vim_fn.shellescape(rel_file)
+          local content = vim_fn.systemlist('git show ' .. hash .. ':' .. rel_file_esc)
 
-          local content = vim.fn.systemlist('git show ' .. hash .. ':' .. rel_file_esc)
-
-          -- 🧘 scratch buffer
           local buf = vim.api.nvim_create_buf(false, true)
-
           vim.api.nvim_buf_set_lines(buf, 0, -1, false, content)
 
-          -- buffer settings
           vim.bo[buf].bufhidden = 'wipe'
           vim.bo[buf].buftype = 'nofile'
           vim.bo[buf].swapfile = false
           vim.bo[buf].modifiable = false
 
-          -- try to preserve filetype
           local ft = vim.filetype.match { filename = rel_file }
           if ft then vim.bo[buf].filetype = ft end
 
-          -- open in new tab (change to vsplit if you want)
           vim.cmd 'tabnew'
           vim.api.nvim_set_current_buf(buf)
+        end)
+
+        -- Ctrl-h: toggle --all and reopen picker
+        map('i', '<C-h>', function()
+          show_all = not show_all
+          actions.close(prompt_bufnr)
+          -- kurz verzögern, damit Picker sauber geschlossen ist
+          vim.defer_fn(function() M.open_file_at_commit() end, 10)
+        end)
+        map('n', '<C-h>', function()
+          show_all = not show_all
+          actions.close(prompt_bufnr)
+          vim.defer_fn(function() M.open_file_at_commit() end, 10)
         end)
 
         return true
