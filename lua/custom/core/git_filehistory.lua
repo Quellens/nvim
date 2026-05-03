@@ -10,13 +10,15 @@ local M = {}
 M.open_file_at_commit = function()
   local rel_file = vim.fn.expand '%'
 
+  local rel_file_esc = vim.fn.shellescape(rel_file)
+
   if rel_file == '' then
     print 'No file open'
     return
   end
 
   -- 🔥 commits with author + relative time
-  local cmd = "git log --pretty=format:'%h | %s | %ar | %an' -- " .. rel_file
+  local cmd = "git log --all --pretty=format:'%h | %s | %ar | %an' -- " .. rel_file_esc
   local handle = io.popen(cmd)
   local result = handle:read '*a'
   handle:close()
@@ -38,19 +40,13 @@ M.open_file_at_commit = function()
       previewer = previewers.new_termopen_previewer {
         get_command = function(entry)
           local hash = entry.value:match '^(%S+)'
-          return {
-            'git',
-            'diff',
-            hash .. '^!',
-            '--',
-            rel_file,
-          }
+          return { 'git', 'diff', hash .. '^!', '--', rel_file }
         end,
       },
 
       sorter = conf.generic_sorter {},
 
-      attach_mappings = function(prompt_bufnr, map)
+      attach_mappings = function(prompt_bufnr)
         actions.select_default:replace(function()
           local selection = action_state.get_selected_entry()
           local hash = selection.value:match '^(%S+)'
@@ -58,7 +54,8 @@ M.open_file_at_commit = function()
           actions.close(prompt_bufnr)
 
           -- 📜 file content from commit
-          local content = vim.fn.systemlist('git show ' .. hash .. ':' .. rel_file)
+
+          local content = vim.fn.systemlist('git show ' .. hash .. ':' .. rel_file_esc)
 
           -- 🧘 scratch buffer
           local buf = vim.api.nvim_create_buf(false, true)
