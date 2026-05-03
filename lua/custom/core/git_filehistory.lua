@@ -57,19 +57,18 @@ M.open_file_at_commit = function()
           local rel_file_esc = vim_fn.shellescape(rel_file)
           local content = vim_fn.systemlist('git show ' .. hash .. ':' .. rel_file_esc)
 
-          local buf = vim.api.nvim_create_buf(false, true)
-          vim.api.nvim_buf_set_lines(buf, 0, -1, false, content)
+          local base = vim.fn.fnamemodify(rel_file, ':t')
 
-          vim.bo[buf].bufhidden = 'wipe'
-          vim.bo[buf].buftype = 'nofile'
-          vim.bo[buf].swapfile = false
-          vim.bo[buf].modifiable = false
+          local rel_file_name = rel_file:match '([^/]+)$' or 'file'
+          local ext = rel_file_name:match '%.(%w+)$' or ''
+          local tmpfile = '/tmp/' .. base .. '-' .. hash .. '.' .. ext
+          vim.fn.writefile(content, tmpfile)
 
-          local ft = vim.filetype.match { filename = rel_file }
-          if ft then vim.bo[buf].filetype = ft end
+          -- Optional: set file permissions (z.B. 0644)
+          vim.loop.fs_chmod(tmpfile, tonumber('0644', 8))
 
-          vim.cmd 'tabnew'
-          vim.api.nvim_set_current_buf(buf)
+          -- Öffne die temporäre Datei in neuem Tab (oder passe an)
+          vim.cmd('tabnew ' .. vim.fn.fnameescape(tmpfile))
         end)
 
         -- Ctrl-h: toggle --all and reopen picker
