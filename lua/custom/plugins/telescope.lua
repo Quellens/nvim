@@ -38,6 +38,7 @@ return {
     -- set keymaps
     local builtin = require 'telescope.builtin'
     vim.keymap.set('n', '<leader>fh', builtin.help_tags, { desc = '[F]ind [H]elp' })
+
     vim.keymap.set('n', '<leader>fk', builtin.keymaps, { desc = '[F]ind [K]eymaps' })
     vim.keymap.set('n', '<leader>ff', function()
       local hidden = false
@@ -93,7 +94,13 @@ return {
     vim.keymap.set('n', '<leader>fd', builtin.diagnostics, { desc = '[F]ind [D]iagnostics' })
     vim.keymap.set('n', '<leader>fr', builtin.resume, { desc = '[F]ind [R]esume' })
     vim.keymap.set('n', '<leader>f.', builtin.oldfiles, { desc = '[F]ind Recent Files ("." for repeat)' })
-    vim.keymap.set('n', '<leader>fc', builtin.commands, { desc = '[F]ind [C]ommands' })
+    vim.keymap.set('n', '<leader>fC', builtin.commands, { desc = '[F]ind [C]ommands' })
+    vim.keymap.set(
+      'n',
+      '<leader>fc',
+      function() require('custom.core.git_filehistory').open_file_at_commit() end,
+      { desc = '[F]ind Git-[C]ommits current file' }
+    )
     vim.keymap.set('n', '<leader><leader>', builtin.buffers, { desc = '[ ] Find existing buffers' })
     vim.keymap.set('n', '<leader>U', '<cmd>Telescope undo<cr>', { desc = 'Undo-Tree for File' })
     vim.keymap.set('n', '<leader>u', '<cmd>Atone toggle<cr>', { desc = 'Undo-Tree for File' })
