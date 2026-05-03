@@ -8,15 +8,16 @@ local action_state = require 'telescope.actions.state'
 local M = {}
 
 M.open_file_at_commit = function()
-  local file = vim.fn.expand '%:p'
   local rel_file = vim.fn.expand '%'
 
-  if file == '' then
+  if rel_file == '' then
     print 'No file open'
     return
   end
 
-  local handle = io.popen("git log --pretty=format:'%h %s' -- " .. rel_file)
+  -- 🔥 commits with author + relative time
+  local cmd = "git log --pretty=format:'%h | %s | %ar | %an' -- " .. rel_file
+  local handle = io.popen(cmd)
   local result = handle:read '*a'
   handle:close()
 
@@ -33,7 +34,7 @@ M.open_file_at_commit = function()
         results = commits,
       },
 
-      -- 🔥 DIFF PREVIEW
+      -- 🔍 DIFF PREVIEW
       previewer = previewers.new_termopen_previewer {
         get_command = function(entry)
           local hash = entry.value:match '^(%S+)'
@@ -56,9 +57,10 @@ M.open_file_at_commit = function()
 
           actions.close(prompt_bufnr)
 
-          -- 🧘‍♂️ SCRATCH BUFFER (READ ONLY)
+          -- 📜 file content from commit
           local content = vim.fn.systemlist('git show ' .. hash .. ':' .. rel_file)
 
+          -- 🧘 scratch buffer
           local buf = vim.api.nvim_create_buf(false, true)
 
           vim.api.nvim_buf_set_lines(buf, 0, -1, false, content)
@@ -68,9 +70,12 @@ M.open_file_at_commit = function()
           vim.bo[buf].buftype = 'nofile'
           vim.bo[buf].swapfile = false
           vim.bo[buf].modifiable = false
-          vim.bo[buf].filetype = vim.bo.filetype
 
-          -- open in new tab (optional: vsplit / split)
+          -- try to preserve filetype
+          local ft = vim.filetype.match { filename = rel_file }
+          if ft then vim.bo[buf].filetype = ft end
+
+          -- open in new tab (change to vsplit if you want)
           vim.cmd 'tabnew'
           vim.api.nvim_set_current_buf(buf)
         end)
