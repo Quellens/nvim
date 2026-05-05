@@ -488,6 +488,49 @@ require('lazy').setup({
         javascript = { 'prettier', stop_after_first = true },
       },
     },
+
+    config = function()
+      local _format_on_save_enabled = true
+
+      -- Toggle-Funktion
+      local function toggle_format_on_save()
+        _format_on_save_enabled = not _format_on_save_enabled
+        if _format_on_save_enabled then
+          vim.notify('Format on save: ON', vim.log.levels.INFO)
+        else
+          vim.notify('Format on save: OFF', vim.log.levels.INFO)
+        end
+      end
+
+      -- Passe format_on_save an, damit die Toggle-Variable beachtet wird
+      local function my_format_on_save(bufnr)
+        if not _format_on_save_enabled then return nil end
+        local disable_filetypes = { c = true, cpp = true }
+        if disable_filetypes[vim.bo[bufnr].filetype] then
+          return nil
+        else
+          return {
+            timeout_ms = 2000,
+            lsp_format = 'fallback',
+          }
+        end
+      end
+
+      -- Beispiel: dein conform Setup mit der geänderten Funktion
+      require('conform').setup {
+        notify_on_error = false,
+        format_on_save = my_format_on_save,
+        formatters_by_ft = {
+          lua = { 'stylua' },
+          typescript = { 'prettier' },
+          javascriptreact = { 'prettier' },
+          typescriptreact = { 'prettier' },
+          javascript = { 'prettier', stop_after_first = true },
+        },
+      }
+
+      vim.keymap.set('n', '<leader>tf', toggle_format_on_save, { desc = 'Toggle format on save' })
+    end,
   },
   -- Highlight todo, notes, etc in comments
   {
