@@ -450,49 +450,10 @@ require('lazy').setup({
     'stevearc/conform.nvim',
     event = { 'BufWritePre' },
     cmd = { 'ConformInfo' },
-    keys = {
-      {
-        '<A-F>',
-        function() require('conform').format { async = true, lsp_format = 'fallback' } end,
-        mode = 'i',
-        desc = '[F]ormat buffer',
-      },
-    },
-    ---@module 'conform'
-    ---@type conform.setupOpts
-    opts = {
-      notify_on_error = false,
-      format_on_save = function(bufnr)
-        -- Disable "format_on_save lsp_fallback" for languages that don't
-        -- have a well standardized coding style. You can add additional
-        -- languages here or re-enable it for the disabled ones.
-        local disable_filetypes = { c = true, cpp = true }
-        if disable_filetypes[vim.bo[bufnr].filetype] then
-          return nil
-        else
-          return {
-            timeout_ms = 2000,
-            lsp_format = 'fallback',
-          }
-        end
-      end,
-      formatters_by_ft = {
-        lua = { 'stylua' },
-        -- Conform can also run multiple formatters sequentially
-        -- python = { "isort", "black" },
-        --
-        -- You can use 'stop_after_first' to run the first available formatter from the list
-        typescript = { 'prettier' },
-        javascriptreact = { 'prettier' },
-        typescriptreact = { 'prettier' },
-        javascript = { 'prettier', stop_after_first = true },
-      },
-    },
-
     config = function()
       local _format_on_save_enabled = true
 
-      -- Toggle-Funktion
+      -- Toggle-function
       local function toggle_format_on_save()
         _format_on_save_enabled = not _format_on_save_enabled
         if _format_on_save_enabled then
@@ -502,7 +463,6 @@ require('lazy').setup({
         end
       end
 
-      -- Passe format_on_save an, damit die Toggle-Variable beachtet wird
       local function my_format_on_save(bufnr)
         if not _format_on_save_enabled then return nil end
         local disable_filetypes = { c = true, cpp = true }
@@ -516,7 +476,6 @@ require('lazy').setup({
         end
       end
 
-      -- Beispiel: dein conform Setup mit der geänderten Funktion
       require('conform').setup {
         notify_on_error = false,
         format_on_save = my_format_on_save,
@@ -543,7 +502,7 @@ require('lazy').setup({
     opts = { signs = false },
   },
 
-  { -- Collection of various small independent plugins/modules
+  {
     'nvim-mini/mini.nvim',
     config = function()
       -- Better Around/Inside textobjects
@@ -560,22 +519,6 @@ require('lazy').setup({
       -- - sd'   - [S]urround [D]elete [']quotes
       -- - sr)'  - [S]urround [R]eplace [)] [']
       require('mini.surround').setup()
-
-      -- Simple and easy statusline.
-      --  You could remove this setup call if you don't like it,
-      --  and try some other statusline plugin
-      -- local statusline = require 'mini.statusline'
-      -- set use_icons to true if you have a Nerd Font
-      -- statusline.setup { use_icons = vim.g.have_nerd_font }
-
-      -- You can configure sections in the statusline by overriding their
-      -- default behavior. For example, here we set the section for
-      -- cursor location to LINE:COLUMN
-      ---@diagnostic disable-next-line: duplicate-set-field
-      -- statusline.section_location = function() return '%2l:%-2v' end
-
-      -- ... and there is more!
-      --  Check out: https://github.com/nvim-mini/mini.nvim
     end,
   },
 
@@ -607,14 +550,8 @@ require('lazy').setup({
   },
 
   { import = 'custom.plugins' },
-  -- For additional information with loading, sourcing and examples see `:help lazy.nvim-🔌-plugin-spec`
-  -- Or use telescope!
-  -- In normal mode type `<space>sh` then write `lazy.nvim-plugin`
-  -- you can continue same window with `<space>sr` which resumes last telescope search
 }, { ---@diagnostic disable-line: missing-fields
   ui = {
-    -- If you are using a Nerd Font: set icons to an empty table which will use the
-    -- default lazy.nvim defined Nerd Font icons, otherwise define a unicode icons table
     icons = vim.g.have_nerd_font and {} or {
       cmd = '⌘',
       config = '🛠',
