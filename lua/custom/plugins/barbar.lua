@@ -6,7 +6,7 @@ return {
   },
   init = function() vim.g.barbar_auto_setup = false end,
   opts = {
-    animation = false,
+    animation = true,
 
     -- Enable/disable current/total tabpages indicator (top right corner)
     tabpages = false,
