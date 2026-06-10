@@ -110,6 +110,10 @@ vim.keymap.set('n', '<C-j>', '<C-w><C-j>', { desc = 'Move focus to the lower win
 vim.keymap.set('v', 'J', ":m '>+1<CR>gv=gv")
 vim.keymap.set('v', 'K', ":m '<-2<CR>gv=gv")
 
+-- Keep visual mode after indenting
+vim.keymap.set('v', '>', '>gv', { noremap = true })
+vim.keymap.set('v', '<', '<gv', { noremap = true })
+
 -- paste without loosig current yank
 vim.keymap.set('x', '<leader>p', '"_dP')
 
