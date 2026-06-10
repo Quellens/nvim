@@ -57,3 +57,41 @@ map('n', 'ZR', '<cmd>AutoSession save<CR><Cmd>restart<CR>', opts)
 
 -- Escape Terminal mode
 map('t', '<esc><esc>', '<C-\\><C-n>', opts)
+
+local function close_and_open_git_changes()
+  local git_files = {}
+
+  local handle = io.popen 'git diff --name-only --diff-filter=ADMRCU'
+  if handle then
+    for line in handle:lines() do
+      table.insert(git_files, line)
+    end
+    handle:close()
+  end
+
+  handle = io.popen 'git ls-files --others --exclude-standard'
+  if handle then
+    for line in handle:lines() do
+      table.insert(git_files, line)
+    end
+    handle:close()
+  end
+
+  local pinned_set = {}
+  for _, buf in ipairs(vim.api.nvim_list_bufs()) do
+    if vim.api.nvim_buf_is_valid(buf) then
+      local ok, pinned = pcall(vim.api.nvim_buf_get_var, buf, 'barbar_pin')
+      if ok and pinned then pinned_set[buf] = true end
+    end
+  end
+
+  for _, buf in ipairs(vim.api.nvim_list_bufs()) do
+    if vim.api.nvim_buf_is_valid(buf) and not pinned_set[buf] then vim.api.nvim_buf_delete(buf, { force = true }) end
+  end
+
+  for _, file in ipairs(git_files) do
+    vim.cmd('edit ' .. vim.fn.fnameescape(file))
+  end
+end
+
+vim.keymap.set('n', '<leader>G', close_and_open_git_changes, { noremap = true, silent = true, desc = 'Close all, open git changes' })
