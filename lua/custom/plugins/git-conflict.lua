@@ -5,7 +5,7 @@ return {
   config = function()
     require('git-conflict').setup {}
 
-    vim.keymap.set('n', 'cc', '<Plug>(git-conflict-ours)')
-    vim.keymap.set('n', 'ci', '<Plug>(git-conflict-theirs)')
+    vim.keymap.set('n', 'cC', '<Plug>(git-conflict-ours)')
+    vim.keymap.set('n', 'cI', '<Plug>(git-conflict-theirs)')
   end,
 }
