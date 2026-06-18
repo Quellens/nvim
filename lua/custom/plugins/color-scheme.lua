@@ -11,5 +11,6 @@ return {
       persistent = true,
     }
     vim.keymap.set('n', '<leader>c', '<cmd>ThemeHub<CR>', { desc = '[C]olor Themes' })
+    vim.keymap.set('n', '<leader>C', '<cmd>Telescope colorscheme<CR>', { desc = '[C]olor Themes' })
   end,
 }
