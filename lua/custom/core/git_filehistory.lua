@@ -4,9 +4,22 @@ local previewers = require 'telescope.previewers'
 local conf = require('telescope.config').values
 local actions = require 'telescope.actions'
 local action_state = require 'telescope.actions.state'
+
 local vim_fn = vim.fn
 
 local M = {}
+
+local function scroll_preview(bufnr, direction)
+  local telescope_state = require 'telescope.state'
+  local status = telescope_state.get_status(bufnr)
+  local preview_winid = status.layout.preview and status.layout.preview.winid
+  if not preview_winid or not vim.api.nvim_win_is_valid(preview_winid) then return end
+  local half = math.floor(vim.api.nvim_win_get_height(preview_winid) / 2)
+  local key = direction > 0 and '\x05' or '\x19' -- <C-e> down, <C-y> up
+  vim.api.nvim_win_call(preview_winid, function()
+    vim.cmd('normal! ' .. half .. key)
+  end)
+end
 
 -- toggle state (persistiert zwischen Aufrufen)
 local show_all = false
@@ -104,6 +117,11 @@ M.open_file_at_commit = function()
           actions.close(prompt_bufnr)
           vim.defer_fn(function() M.open_file_at_commit() end, 10)
         end)
+
+        map('i', '<C-u>', function() scroll_preview(prompt_bufnr, -1) end)
+        map('n', '<C-u>', function() scroll_preview(prompt_bufnr, -1) end)
+        map('i', '<C-d>', function() scroll_preview(prompt_bufnr, 1) end)
+        map('n', '<C-d>', function() scroll_preview(prompt_bufnr, 1) end)
 
         return true
       end,
