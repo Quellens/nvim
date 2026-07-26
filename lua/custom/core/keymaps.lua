@@ -96,8 +96,58 @@ end
 
 vim.keymap.set('n', '<leader>G', close_and_open_git_changes, { noremap = true, silent = true, desc = 'Close all, open git changes' })
 
+local function floating_input(opts, on_confirm)
+  opts = opts or {}
+  local prompt = opts.prompt or 'Prompt'
+
+  local width = math.min(60, vim.o.columns - 4)
+  local height = 5
+  local row = math.floor((vim.o.lines - height) / 2)
+  local col = math.floor((vim.o.columns - width) / 2)
+
+  local buf = vim.api.nvim_create_buf(false, true)
+  vim.bo[buf].buftype = 'nofile'
+  vim.bo[buf].bufhidden = 'wipe'
+
+  local win = vim.api.nvim_open_win(buf, true, {
+    relative = 'editor',
+    width = width,
+    height = height,
+    row = row,
+    col = col,
+    style = 'minimal',
+    border = 'rounded',
+    title = ' ' .. prompt .. ' ',
+    title_pos = 'center',
+  })
+
+  vim.wo[win].wrap = true
+  vim.wo[win].linebreak = true
+
+  vim.cmd 'startinsert'
+
+  local function close()
+    if not vim.api.nvim_win_is_valid(win) then return end
+    local lines = vim.api.nvim_buf_get_lines(buf, 0, -1, false)
+    vim.cmd 'stopinsert'
+    vim.api.nvim_win_close(win, true)
+    vim.schedule(function() on_confirm(table.concat(lines, '\n')) end)
+  end
+
+  local function cancel()
+    if not vim.api.nvim_win_is_valid(win) then return end
+    vim.cmd 'stopinsert'
+    vim.api.nvim_win_close(win, true)
+  end
+
+  vim.keymap.set('n', '<CR>', close, { buffer = buf, nowait = true })
+  vim.keymap.set('n', '<C-CR>', close, { buffer = buf, nowait = true })
+  vim.keymap.set('n', '<Esc>', cancel, { buffer = buf, nowait = true })
+end
+
 -- copy reference for agents
 local function copy_ref(opts)
+  opts = opts or {}
   local path = vim.fn.expand '%:.'
   local ref = path
 
@@ -110,11 +160,11 @@ local function copy_ref(opts)
     ref = path .. ':' .. start_line .. ':' .. end_line
   end
 
-  local note = vim.fn.input 'Prompt'
-  if note ~= '' then ref = ref .. ' ' .. note end
-
-  vim.fn.setreg('+', ref)
-  vim.notify('Copied: ' .. ref)
+  floating_input({ prompt = 'Prompt' }, function(note)
+    if note and note ~= '' then ref = ref .. ' ' .. note end
+    vim.fn.setreg('+', ref)
+    vim.notify('Kopiert: ' .. ref)
+  end)
 end
 
 -- normal: copy just the file path
