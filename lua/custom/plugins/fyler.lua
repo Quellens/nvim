@@ -1,5 +1,6 @@
 return {
   'A7Lavinraj/fyler.nvim',
+  enabled = false,
   lazy = false,
   branch = 'stable',
   opts = {
